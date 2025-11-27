@@ -76,13 +76,13 @@ const PhSimulator = () => {
           onClick={() => handlePreset('acid', 4.5)}
           className={"px-4 py-2 md:px-6 md:py-3 rounded-full font-bold text-base md:text-lg transition-all shadow-sm " + (drugType === 'acid' ? 'bg-blue-600 text-white ring-2 ring-blue-300' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}
         >
-          弱酸性 (例: NSAIDs)
+          弱酸性
         </button>
         <button 
           onClick={() => handlePreset('base', 8.0)}
           className={"px-4 py-2 md:px-6 md:py-3 rounded-full font-bold text-base md:text-lg transition-all shadow-sm " + (drugType === 'base' ? 'bg-indigo-600 text-white ring-2 ring-indigo-300' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}
         >
-          弱塩基性 (例: 麻酔薬)
+          弱塩基性
         </button>
       </div>
 
