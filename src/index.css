@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* スライドのスタイル調整 */
+body {
+  margin: 0;
+  overflow: hidden; /* スクロールバーを消す */
+}
