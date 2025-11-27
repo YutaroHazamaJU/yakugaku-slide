@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronRight, ChevronLeft, BookOpen, Pill, Activity, TestTube, ArrowRight, Brain, AlertTriangle } from 'lucide-react';
+import { ChevronRight, ChevronLeft, BookOpen, Pill, Activity, TestTube, ArrowRight, Brain, AlertTriangle, MapPin } from 'lucide-react';
 
 // --- 計算ロジック ---
 const calculateIonization = (ph, pka, type) => {
@@ -13,6 +13,15 @@ const calculateIonization = (ph, pka, type) => {
     percentIonized = 100 / (1 + Math.pow(10, diff));
   }
   return percentIonized;
+};
+
+// --- 臓器判定ロジック ---
+const getOrganInfo = (ph) => {
+  if (ph < 3.5) return { name: '胃 (Stomach)', desc: '強酸性による殺菌・タンパク消化', color: 'text-red-700', bg: 'bg-red-50', border: 'border-red-200' };
+  if (ph < 6.0) return { name: '十二指腸 (Duodenum)', desc: '胃酸の中和・胆汁/膵液の分泌', color: 'text-yellow-700', bg: 'bg-yellow-50', border: 'border-yellow-200' };
+  if (ph < 7.5) return { name: '小腸 (空腸・回腸)', desc: '【主要吸収部位】広大な表面積', color: 'text-green-700', bg: 'bg-green-50', border: 'border-green-200' };
+  if (ph <= 8.5) return { name: '大腸 (Large Intestine)', desc: '水分の吸収・腸内細菌叢', color: 'text-blue-700', bg: 'bg-blue-50', border: 'border-blue-200' };
+  return { name: '塩基性環境', desc: '生体内では稀な環境', color: 'text-purple-700', bg: 'bg-purple-50', border: 'border-purple-200' };
 };
 
 // --- 部品（コンポーネント） ---
@@ -37,14 +46,16 @@ const BulletPoint = ({ children, icon: Icon = ChevronRight }) => (
 
 // インタラクティブ実験：pH & pKa シミュレーター
 const PhSimulator = () => {
-  const [ph, setPh] = useState(4.0);
-  const [pka, setPka] = useState(4.5); // ★pKaも動かせるようにState化
-  const [drugType, setDrugType] = useState('acid'); // 'acid' or 'base'
+  const [ph, setPh] = useState(1.5); // 初期値を「胃」に合わせています
+  const [pka, setPka] = useState(4.5);
+  const [drugType, setDrugType] = useState('acid');
 
   const ionization = calculateIonization(ph, pka, drugType);
   const unionized = 100 - ionization;
+  
+  // 現在のpHに応じた臓器情報を取得
+  const organ = getOrganInfo(ph);
 
-  // プリセット切り替え用
   const handlePreset = (type, defaultPka) => {
     setDrugType(type);
     setPka(defaultPka);
@@ -54,7 +65,7 @@ const PhSimulator = () => {
     <div className="bg-white p-4 md:p-6 rounded-xl shadow-lg border border-gray-200 mt-2 text-base">
       <h3 className="text-2xl font-bold text-gray-800 mb-4 flex items-center">
         <TestTube className="mr-3 w-8 h-8 text-blue-600" />
-        実験：pHとpKaの変化
+        実験：pHと体内動態
       </h3>
 
       {/* 1. 薬物タイプ選択ボタン */}
@@ -73,27 +84,38 @@ const PhSimulator = () => {
         </button>
       </div>
 
-      {/* 2. スライダーエリア (pH と pKa) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6 bg-gray-50 p-4 rounded-xl">
-        {/* pH Slider */}
-        <div>
-          <label className="block text-gray-700 font-bold mb-2 text-lg flex justify-between">
-            <span>環境 pH</span>
-            <span className="text-3xl text-blue-600 font-mono">{ph.toFixed(1)}</span>
-          </label>
-          <input 
-            type="range" min="1" max="10" step="0.1" 
-            value={ph}
-            onChange={(e) => setPh(parseFloat(e.target.value))}
-            className="w-full h-4 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-blue-600"
-          />
-          <div className="text-sm text-gray-400 mt-1 flex justify-between">
-            <span>酸性(1.0)</span><span>塩基性(10.0)</span>
+      {/* 2. スライダーエリア */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        
+        {/* 左側：pH Slider と 臓器表示 */}
+        <div className="bg-gray-50 p-4 rounded-xl flex flex-col justify-between border border-gray-200">
+          <div>
+            <label className="block text-gray-700 font-bold mb-2 text-lg flex justify-between">
+              <span>環境 pH</span>
+              <span className="text-3xl text-blue-600 font-mono">{ph.toFixed(1)}</span>
+            </label>
+            <input 
+              type="range" min="1" max="9" step="0.1" 
+              value={ph}
+              onChange={(e) => setPh(parseFloat(e.target.value))}
+              className="w-full h-4 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-blue-600 mb-4"
+            />
+          </div>
+
+          {/* 現在の臓器表示 */}
+          <div className={`p-4 rounded-lg border-l-8 ${organ.bg} ${organ.border} transition-colors duration-300 shadow-sm`}>
+             <div className={`font-bold text-xl flex items-center mb-1 ${organ.color}`}>
+               <MapPin className="w-6 h-6 mr-2 flex-shrink-0" />
+               {organ.name}
+             </div>
+             <div className="text-sm text-gray-700 ml-8 font-medium">
+               {organ.desc}
+             </div>
           </div>
         </div>
 
-        {/* pKa Slider (★統合追加機能) */}
-        <div>
+        {/* 右側：pKa Slider */}
+        <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
           <label className="block text-gray-700 font-bold mb-2 text-lg flex justify-between">
             <span>薬物の pKa</span>
             <span className="text-3xl text-pink-600 font-mono">{pka.toFixed(1)}</span>
@@ -104,8 +126,10 @@ const PhSimulator = () => {
             onChange={(e) => setPka(parseFloat(e.target.value))}
             className="w-full h-4 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-pink-500"
           />
-          <div className="text-sm text-gray-400 mt-1 text-center">
-            スライダーで薬の性質を変えられます
+          <div className="text-sm text-gray-500 mt-4 leading-relaxed">
+            <p>● 酸性薬物 (pKa 3-5)</p>
+            <p>● 塩基性薬物 (pKa 7-9)</p>
+            <p className="mt-2 text-xs">スライダーで値を変更してシミュレーション</p>
           </div>
         </div>
       </div>
@@ -149,7 +173,8 @@ const PhSimulator = () => {
       
       <div className="mt-4 text-sm text-gray-600 bg-gray-100 p-3 rounded border-l-4 border-gray-500">
         <strong>解説:</strong> {drugType === 'acid' ? '弱酸性' : '弱塩基性'}薬物 (pKa {pka.toFixed(1)}) は、
-        pHが{ph.toFixed(1)}のとき、
+        <span className={`font-bold mx-1 ${organ.color}`}>{organ.name}</span>
+        (pH {ph.toFixed(1)}) にいるとき、
         <span className={unionized > 50 ? "font-bold text-orange-600" : ""}>分子形が{unionized.toFixed(0)}%</span>になります。
       </div>
     </div>
@@ -241,9 +266,9 @@ const App = () => {
         <Slide className="bg-gray-50">
           <SectionTitle>Henderson-Hasselbalch式の可視化</SectionTitle>
           <p className="text-gray-600 mb-2 text-xl">
-            下のスライダーでpHやpKaを動かし、薬物がどう変化するか確認しましょう。
+            下のスライダーでpHやpKaを動かし、体内動態の変化を確認しましょう。
           </p>
-          {/* ここに統合したシミュレーターを配置 */}
+          {/* シミュレーター */}
           <PhSimulator />
         </Slide>
       )
