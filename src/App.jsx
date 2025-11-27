@@ -480,7 +480,7 @@ const App = () => {
       <div className="bg-gray-800 text-white p-3 md:p-4 flex justify-between items-center z-10 shadow-md flex-shrink-0">
         <div className="font-bold text-lg md:text-xl flex items-center">
           <TestTube className="mr-2 md:mr-3 text-blue-400" />
-          薬学基礎統合講義
+          制作：間祐太朗（病院薬剤学研究室）
         </div>
         <div className="text-sm md:text-base bg-gray-700 px-3 py-1 md:px-4 md:py-1 rounded-full">
           Slide {currentSlide + 1} / {slides.length}
