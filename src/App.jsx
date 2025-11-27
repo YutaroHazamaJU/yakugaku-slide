@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronRight, ChevronLeft, BookOpen, Pill, Activity, TestTube, ArrowRight, Brain, AlertTriangle, MapPin } from 'lucide-react';
+import { ChevronRight, ChevronLeft, BookOpen, Pill, Activity, TestTube, ArrowRight, Brain, AlertTriangle, MapPin, Stethoscope, MousePointerClick } from 'lucide-react';
 
 // --- 計算ロジック ---
 const calculateIonization = (ph, pka, type) => {
@@ -25,21 +25,18 @@ const getOrganInfo = (ph) => {
 };
 
 // --- 部品（コンポーネント） ---
-// スライド全体のコンテナ：画面サイズに応じてパディングと文字サイズを調整
 const Slide = ({ children, className = "" }) => (
   <div className={"flex flex-col h-full overflow-y-auto p-4 md:p-8 lg:p-12 text-base md:text-lg lg:text-xl xl:text-2xl " + className}>
     {children}
   </div>
 );
 
-// セクションタイトル：画面サイズに応じて大きく
 const SectionTitle = ({ children }) => (
   <h2 className="text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-bold text-blue-800 mb-4 md:mb-8 border-b-4 border-blue-200 pb-2">
     {children}
   </h2>
 );
 
-// 箇条書き：アイコンサイズとテキストサイズを調整
 const BulletPoint = ({ children, icon: Icon = ChevronRight }) => (
   <li className="flex items-start mb-4 md:mb-6 text-gray-800 text-base md:text-xl lg:text-2xl">
     <Icon className="w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 mr-3 md:mr-4 text-blue-500 flex-shrink-0 mt-1" />
@@ -58,6 +55,24 @@ const PhSimulator = () => {
   
   const organ = getOrganInfo(ph);
 
+  // ★代表的な薬物リスト
+  const representativeDrugs = {
+    acid: [
+      { name: 'アスピリン', pka: 3.5 },
+      { name: 'フロセミド', pka: 3.9 },
+      { name: 'インドメタシン', pka: 4.5 },
+      { name: 'ワルファリン', pka: 5.0 },
+      { name: 'フェニトイン', pka: 8.3 },
+    ],
+    base: [
+      { name: 'ジアゼパム', pka: 3.4 },
+      { name: 'コデイン', pka: 8.2 },
+      { name: 'ジフェンヒドラミン', pka: 9.0 },
+      { name: 'クロルプロマジン', pka: 9.3 },
+      { name: 'イミプラミン', pka: 9.5 },
+    ]
+  };
+
   const handlePreset = (type, defaultPka) => {
     setDrugType(type);
     setPka(defaultPka);
@@ -70,26 +85,24 @@ const PhSimulator = () => {
         実験：pHと体内動態
       </h3>
 
-      {/* 1. 薬物タイプ選択ボタン (スマホでは縦並び、タブレット以上で横並び) */}
+      {/* タイプ選択ボタン */}
       <div className="flex flex-col sm:flex-row justify-center space-y-2 sm:space-y-0 sm:space-x-4 mb-6">
         <button 
           onClick={() => handlePreset('acid', 4.5)}
           className={"px-4 py-2 md:px-6 md:py-3 rounded-full font-bold text-base md:text-lg transition-all shadow-sm " + (drugType === 'acid' ? 'bg-blue-600 text-white ring-2 ring-blue-300' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}
         >
-          弱酸性
+          弱酸性薬物
         </button>
         <button 
-          onClick={() => handlePreset('base', 8.0)}
+          onClick={() => handlePreset('base', 9.0)}
           className={"px-4 py-2 md:px-6 md:py-3 rounded-full font-bold text-base md:text-lg transition-all shadow-sm " + (drugType === 'base' ? 'bg-indigo-600 text-white ring-2 ring-indigo-300' : 'bg-gray-100 text-gray-600 hover:bg-gray-200')}
         >
-          弱塩基性
+          弱塩基性薬物
         </button>
       </div>
 
-      {/* 2. スライダーエリア */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mb-6">
-        
-        {/* 左側：pH Slider と 臓器表示 */}
+        {/* 左側：pH Slider */}
         <div className="bg-gray-50 p-3 md:p-4 rounded-xl flex flex-col justify-between border border-gray-200">
           <div>
             <label className="block text-gray-700 font-bold mb-2 text-base md:text-lg flex justify-between">
@@ -103,8 +116,6 @@ const PhSimulator = () => {
               className="w-full h-4 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-blue-600 mb-4"
             />
           </div>
-
-          {/* 現在の臓器表示 */}
           <div className={`p-3 md:p-4 rounded-lg border-l-8 ${organ.bg} ${organ.border} transition-colors duration-300 shadow-sm`}>
              <div className={`font-bold text-lg md:text-xl flex items-center mb-1 ${organ.color}`}>
                <MapPin className="w-5 h-5 md:w-6 md:h-6 mr-2 flex-shrink-0" />
@@ -116,29 +127,48 @@ const PhSimulator = () => {
           </div>
         </div>
 
-        {/* 右側：pKa Slider */}
-        <div className="bg-gray-50 p-3 md:p-4 rounded-xl border border-gray-200">
-          <label className="block text-gray-700 font-bold mb-2 text-base md:text-lg flex justify-between">
-            <span>薬物の pKa</span>
-            <span className="text-2xl md:text-3xl text-pink-600 font-mono">{pka.toFixed(1)}</span>
-          </label>
-          <input 
-            type="range" min="2" max="10" step="0.1" 
-            value={pka}
-            onChange={(e) => setPka(parseFloat(e.target.value))}
-            className="w-full h-4 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-pink-500"
-          />
-          <div className="text-xs md:text-sm text-gray-500 mt-4 leading-relaxed">
-            <p>● 酸性薬物 (pKa 3-5)</p>
-            <p>● 塩基性薬物 (pKa 7-9)</p>
-            <p className="mt-2 opacity-75">※スライダーで値を変更してシミュレーション</p>
+        {/* 右側：pKa Slider と ★薬物リスト */}
+        <div className="bg-gray-50 p-3 md:p-4 rounded-xl border border-gray-200 flex flex-col">
+          <div>
+            <label className="block text-gray-700 font-bold mb-2 text-base md:text-lg flex justify-between">
+              <span>薬物の pKa</span>
+              <span className="text-2xl md:text-3xl text-pink-600 font-mono">{pka.toFixed(1)}</span>
+            </label>
+            <input 
+              type="range" min="2" max="10" step="0.1" 
+              value={pka}
+              onChange={(e) => setPka(parseFloat(e.target.value))}
+              className="w-full h-4 bg-gray-300 rounded-lg appearance-none cursor-pointer accent-pink-500"
+            />
+          </div>
+          
+          {/* ★実際の薬物選択エリア */}
+          <div className="mt-4 flex-1">
+            <div className="text-xs md:text-sm text-gray-500 mb-2 font-bold flex items-center">
+              <MousePointerClick className="w-4 h-4 mr-1"/>
+              代表的な{drugType === 'acid' ? '酸性' : '塩基性'}薬物 (クリックで設定)
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {representativeDrugs[drugType].map((drug) => (
+                <button
+                  key={drug.name}
+                  onClick={() => setPka(drug.pka)}
+                  className={`text-xs md:text-sm px-2 py-1 rounded border transition-colors ${
+                    pka === drug.pka 
+                      ? (drugType === 'acid' ? 'bg-blue-100 border-blue-400 text-blue-700 font-bold' : 'bg-indigo-100 border-indigo-400 text-indigo-700 font-bold') 
+                      : 'bg-white border-gray-300 text-gray-600 hover:bg-gray-100'
+                  }`}
+                >
+                  {drug.name} ({drug.pka})
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </div>
 
-      {/* 3. 結果表示エリア */}
+      {/* 結果表示エリア */}
       <div className="grid grid-cols-2 gap-4 md:gap-6">
-        {/* 溶解性（イオン形） */}
         <div className="bg-blue-50 p-3 md:p-4 rounded-xl text-center border border-blue-200 shadow-sm">
           <div className="text-gray-600 mb-1 font-bold text-xs md:text-base">水への溶解性 (イオン形)</div>
           <div className="text-2xl md:text-4xl font-bold text-blue-600 mb-2">{ionization.toFixed(1)}%</div>
@@ -155,7 +185,6 @@ const PhSimulator = () => {
           </p>
         </div>
 
-        {/* 膜透過性（分子形） */}
         <div className="bg-orange-50 p-3 md:p-4 rounded-xl text-center border border-orange-200 shadow-sm">
           <div className="text-gray-600 mb-1 font-bold text-xs md:text-base">膜透過性 (分子形)</div>
           <div className="text-2xl md:text-4xl font-bold text-orange-600 mb-2">{unionized.toFixed(1)}%</div>
@@ -178,6 +207,7 @@ const PhSimulator = () => {
         <span className={`font-bold mx-1 ${organ.color}`}>{organ.name}</span>
         (pH {ph.toFixed(1)}) にいるとき、
         <span className={unionized > 50 ? "font-bold text-orange-600" : ""}>分子形が{unionized.toFixed(0)}%</span>になります。
+        これは<span className="font-bold text-red-500 mx-1">溶解性と膜透過性のトレードオフ</span>を示唆しています。
       </div>
     </div>
   );
@@ -187,7 +217,6 @@ const PhSimulator = () => {
 const App = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // キーボード操作のサポート
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
@@ -195,7 +224,7 @@ const App = () => {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, []); // 空配列でマウント時のみ実行
+  }, []);
 
   const slides = [
     {
@@ -231,12 +260,12 @@ const App = () => {
       title: "なぜ「酸塩基平衡」を学ぶのか？",
       content: (
         <Slide>
-          <SectionTitle>薬学における永遠のジレンマ</SectionTitle>
+          <SectionTitle>溶解性と膜透過性のトレードオフ</SectionTitle>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center h-full">
             <div>
               <p className="text-lg md:text-2xl text-gray-600 mb-6 md:mb-8 leading-relaxed">
                 多くの医薬品は「弱酸」または「弱塩基」の有機化合物です。
-                これらは環境のpHによって、その姿（存在状態）を劇的に変えます。
+                これらは環境のpHによって、その<span className="font-bold text-blue-600">存在形</span>（イオン形か分子形か）を劇的に変えます。
               </p>
               <ul className="space-y-4 md:space-y-6">
                 <BulletPoint icon={AlertTriangle}>
@@ -250,7 +279,7 @@ const App = () => {
               </ul>
               <div className="mt-6 md:mt-10 p-4 md:p-6 bg-red-50 text-red-800 rounded-xl border-l-8 border-red-500 text-lg md:text-xl shadow-md">
                 <span className="font-bold">重要:</span> 薬が効くためには「溶けて」かつ「吸収される」必要があります。
-                このバランスを支配するのが <span className="font-bold text-xl md:text-2xl">pH</span> と <span className="font-bold text-xl md:text-2xl">pKa</span> です。
+                この相反する性質のバランスを支配するのが <span className="font-bold text-xl md:text-2xl">pH</span> と <span className="font-bold text-xl md:text-2xl">pKa</span> です。
               </div>
             </div>
             <div className="flex justify-center items-center mt-6 lg:mt-0">
@@ -281,7 +310,6 @@ const App = () => {
           <p className="text-gray-600 mb-2 text-lg md:text-xl">
             下のスライダーでpHやpKaを動かし、体内動態の変化を確認しましょう。
           </p>
-          {/* シミュレーター */}
           <PhSimulator />
         </Slide>
       )
@@ -290,37 +318,71 @@ const App = () => {
       title: "生物薬剤学への応用：吸収",
       content: (
         <Slide>
-          <SectionTitle>pH分配仮説と吸収部位</SectionTitle>
+          <SectionTitle>消化管内移動とpHプロファイル</SectionTitle>
           <div className="flex flex-col space-y-6 md:space-y-8">
             <div className="bg-white p-4 md:p-6 rounded-xl shadow-sm border-l-8 border-green-500">
               <h3 className="font-bold text-xl md:text-2xl text-green-700 mb-2 flex items-center">
-                <Activity className="mr-3 w-6 h-6 md:w-8 md:h-8" /> 体内でのドラマ
+                <Activity className="mr-3 w-6 h-6 md:w-8 md:h-8" /> 消化管内移動とpHプロファイル
               </h3>
               <p className="text-lg md:text-xl text-gray-700">
                 薬物は消化管内を移動しながら、刻々と変化するpH環境にさらされます。
               </p>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-              <div className="border-2 p-4 md:p-6 rounded-xl hover:shadow-md transition-shadow">
-                <h4 className="font-bold text-xl md:text-2xl text-gray-800 border-b-2 pb-3 mb-4">胃 (pH 1.2〜2.0)</h4>
-                <ul className="text-base md:text-lg space-y-3">
-                  <li className="text-blue-600 font-bold">● 弱酸性薬物</li>
-                  <li>→ 分子形が多い (吸収されやすい形)</li>
-                  <li className="text-red-500 font-bold mt-2 flex items-center"><AlertTriangle className="w-5 h-5 mr-1"/> しかし...！</li>
-                  <li>溶解度が低すぎて溶けないため、実際はあまり吸収されないことが多い。</li>
-                </ul>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-6">
+              
+              {/* 1. 胃 (弱酸) */}
+              <div className="border-2 p-4 md:p-6 rounded-xl bg-white hover:shadow-md transition-shadow">
+                <h4 className="font-bold text-xl text-gray-800 border-b-2 pb-2 mb-3">胃 (pH 1.2〜)</h4>
+                <div className="text-base space-y-2">
+                  <div className="font-bold text-blue-600">● 弱酸性薬物</div>
+                  <div>→ 分子形が多い (吸収◎)</div>
+                  <div className="text-red-500 text-sm font-bold flex items-center mt-1">
+                    <AlertTriangle className="w-4 h-4 mr-1"/>溶解度が低すぎる
+                  </div>
+                  <div className="text-sm text-gray-500 mt-2 border-t pt-2">
+                    <span className="font-bold text-indigo-600">● 弱塩基性薬物</span><br/>
+                    → 完全イオン化 (溶解◎)<br/>
+                    → 吸収はされない
+                  </div>
+                </div>
               </div>
               
+              {/* 2. 小腸 (メイン) */}
               <div className="border-2 p-4 md:p-6 rounded-xl bg-green-50 border-green-200 hover:shadow-md transition-shadow">
-                <h4 className="font-bold text-xl md:text-2xl text-gray-800 border-b-2 pb-3 mb-4 border-green-300">小腸 (pH 6.0〜7.5)</h4>
-                <ul className="text-base md:text-lg space-y-3">
-                  <li className="text-blue-600 font-bold">● 弱酸性薬物</li>
-                  <li>→ イオン形が増えてよく溶ける (溶解◎)</li>
-                  <li>→ 表面積が広大で血流も豊富</li>
-                  <li className="font-bold text-green-700 mt-2 text-lg md:text-xl bg-green-100 p-2 rounded">結論: 主要な吸収部位となる</li>
-                </ul>
+                <h4 className="font-bold text-xl text-gray-800 border-b-2 pb-2 mb-3 border-green-300">小腸 (pH 6.5〜)</h4>
+                <div className="text-base space-y-2">
+                  <div className="font-bold text-blue-600">● 弱酸性薬物</div>
+                  <div>→ イオン形増 (溶解◎)</div>
+                  <div className="font-bold text-green-700 mt-2 bg-green-100 p-1 rounded text-center text-sm">
+                    主要な吸収部位！
+                  </div>
+                  <div className="text-sm text-gray-500 mt-2 border-t pt-2 border-green-200">
+                    <span className="font-bold text-indigo-600">● 弱塩基性薬物</span><br/>
+                    → 分子形が増え始める<br/>
+                    → 吸収が進行する
+                  </div>
+                </div>
               </div>
+
+              {/* 3. 大腸・組織 (弱塩基) */}
+              <div className="border-2 p-4 md:p-6 rounded-xl bg-indigo-50 border-indigo-200 hover:shadow-md transition-shadow">
+                <h4 className="font-bold text-xl text-gray-800 border-b-2 pb-2 mb-3 border-indigo-300">組織/大腸</h4>
+                <div className="text-base space-y-2">
+                  <div className="font-bold text-indigo-600">● 弱塩基性薬物</div>
+                  <div>(pKa 8-9のもの)</div>
+                  <div className="mt-2">
+                    組織（細胞内pH 7.0等）や大腸下部で分子形を維持しやすい。
+                  </div>
+                  <div className="font-bold text-indigo-700 mt-2 bg-indigo-100 p-1 rounded text-center text-sm">
+                    組織移行性が高い
+                  </div>
+                  <div className="text-xs text-gray-500 mt-1">
+                    ※多くの向精神薬や抗がん剤は弱塩基性で、脳や細胞内へ移行しやすい。
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
         </Slide>
@@ -330,10 +392,10 @@ const App = () => {
       title: "製剤学への応用：処方設計",
       content: (
         <Slide>
-          <SectionTitle>溶けない薬をどう溶かす？</SectionTitle>
+          <SectionTitle>難溶性薬物の可溶化手法</SectionTitle>
           <p className="mb-6 md:mb-8 text-lg md:text-xl text-gray-600">
             創薬段階で見つかる候補化合物の約7割は「難溶性」です。
-            酸塩基平衡の知識を使って、強制的に溶かす工夫が求められます。
+            酸塩基平衡の知識を使って、物理化学的に溶解度を向上させるアプローチが求められます。
           </p>
           
           <div className="space-y-4 md:space-y-6">
@@ -394,9 +456,9 @@ const App = () => {
               <div className="text-lg md:text-xl text-gray-500 mt-2">Henderson-Hasselbalch式、pH分配仮説</div>
             </div>
             <div className="p-6 md:p-8 bg-gray-50 rounded-2xl border border-gray-200">
-              <Brain className="w-10 h-10 md:w-12 md:h-12 mx-auto text-indigo-400 mb-4" />
-              <div className="font-bold text-xl md:text-2xl text-gray-700">考えるヒント</div>
-              <div className="text-lg md:text-xl text-gray-500 mt-2">「この薬、食後(胃酸減少時)に飲んだら吸収はどうなる？」</div>
+              <Stethoscope className="w-10 h-10 md:w-12 md:h-12 mx-auto text-indigo-400 mb-4" />
+              <div className="font-bold text-xl md:text-2xl text-gray-700">臨床応用</div>
+              <div className="text-lg md:text-xl text-gray-500 mt-2">食事効果 (Food Effect) の予測</div>
             </div>
           </div>
         </Slide>
@@ -418,7 +480,7 @@ const App = () => {
       <div className="bg-gray-800 text-white p-3 md:p-4 flex justify-between items-center z-10 shadow-md flex-shrink-0">
         <div className="font-bold text-lg md:text-xl flex items-center">
           <TestTube className="mr-2 md:mr-3 text-blue-400" />
-          制作：間祐太朗
+          薬学基礎統合講義
         </div>
         <div className="text-sm md:text-base bg-gray-700 px-3 py-1 md:px-4 md:py-1 rounded-full">
           Slide {currentSlide + 1} / {slides.length}
