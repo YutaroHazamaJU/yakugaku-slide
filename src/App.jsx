@@ -279,10 +279,6 @@ const App = () => {
                   「<span className="font-bold text-blue-600">どの形がどれくらい存在するか</span>」
                   を決める考え方
                 </BulletPoint>
-                <BulletPoint>
-                  濃度・活量・平衡 ＝
-                  「<span className="font-bold">どこにどれだけ分布するか</span>」を扱う学問
-                </BulletPoint>
               </ul>
             </div>
 
