@@ -257,6 +257,73 @@ const App = () => {
       )
     },
     {
+      title: "物理化学で学んだことは薬剤学でどう活きる？",
+      content: (
+        <Slide>
+          <SectionTitle>「式」を使って，製剤や吸収を読み解く</SectionTitle>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
+            {/* 左：物理化学でやったことの振り返り */}
+            <div>
+              <p className="text-lg md:text-2xl text-gray-600 mb-6 leading-relaxed">
+                直前の物理化学では，次のような内容を学びました：
+              </p>
+              <ul className="space-y-4 md:space-y-6">
+                <BulletPoint>
+                  Henderson–Hasselbalch式：
+                  <span className="font-mono bg-gray-100 px-2 py-0.5 rounded ml-1">
+                    pH = pKa + log([A⁻]/[HA])
+                  </span>
+                </BulletPoint>
+                <BulletPoint>
+                  緩衝液・pKa・pI など
+                  「<span className="font-bold text-blue-600">どの形がどれくらい存在するか</span>」
+                  を決める考え方
+                </BulletPoint>
+                <BulletPoint>
+                  濃度・活量・平衡 ＝
+                  「<span className="font-bold">どこにどれだけ分布するか</span>」を扱う学問
+                </BulletPoint>
+              </ul>
+            </div>
+
+            {/* 右：薬剤での具体例 */}
+            <div className="bg-gray-50 border border-gray-200 rounded-2xl p-4 md:p-6 shadow-sm">
+              <h3 className="font-bold text-xl md:text-2xl text-gray-800 mb-3 flex items-center">
+                <Pill className="w-6 h-6 md:w-8 md:h-8 mr-2 text-indigo-600" />
+                薬剤学ではこう使う！
+              </h3>
+              <ul className="space-y-3 text-base md:text-lg text-gray-700">
+                <li>
+                  ● <span className="font-bold">どのpHでよく溶けるか？</span><br />
+                  → 溶解度–pHプロファイルの計算に HH式をそのまま利用。
+                </li>
+                <li>
+                  ● <span className="font-bold">どの部位で吸収されやすいか？</span><br />
+                  → 消化管ごとのpHと pKa から，
+                  「<span className="font-bold text-orange-600">分子形の割合</span>」を予測。
+                </li>
+                <li>
+                  ● <span className="font-bold">注射剤や点滴のpH設計</span><br />
+                  → 溶ける pH と，患者さんへの刺激性のバランスをとる。
+                </li>
+                <li>
+                  ● <span className="font-bold">国試の計算問題</span><br />
+                  → 今日このあと解説する
+                  「溶解度」「溶出性」「pH分配」の問題は，
+                  全て物理化学で学んだ考え方の延長線上。
+                </li>
+              </ul>
+              <div className="mt-4 p-3 md:p-4 bg-blue-50 border-l-4 border-blue-400 rounded text-sm md:text-base text-gray-700">
+                この授業では，
+                <span className="font-bold text-blue-700 mx-1">物理化学で学んだ式</span>
+                を「現実の製剤・吸収・国試問題」にどう結びつけるかを体感してもらいます。
+              </div>
+            </div>
+          </div>
+        </Slide>
+      )
+    },
+    {
       title: "なぜ「酸塩基平衡」を学ぶのか？",
       content: (
         <Slide>
