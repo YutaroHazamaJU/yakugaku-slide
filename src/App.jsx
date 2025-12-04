@@ -1,6 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft, BookOpen, Pill, Activity, TestTube, ArrowRight, Brain, AlertTriangle, MapPin, Stethoscope, MousePointerClick } from 'lucide-react';
+// src/App.jsx（例）
+import PasswordGate from './components/PasswordGate';
+// 既存の import はそのまま残す
 
+function App() {
+  return (
+    <PasswordGate
+      correctPassword="1208"      // ★ 好きなパスワードに書き換え可
+      storageKey="yakugaku-slide-unlocked"  // yakugaku-slide 用のキー
+    >
+      <MainSlidesApp />
+    </PasswordGate>
+  );
+}
 // --- 計算ロジック ---
 const calculateIonization = (ph, pka, type) => {
   const diff = ph - pka;
@@ -214,7 +227,7 @@ const PhSimulator = () => {
 };
 
 // --- メインアプリ ---
-const App = () => {
+const MainSlidesApp = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
