@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft, BookOpen, Pill, Activity, TestTube, ArrowRight, Brain, AlertTriangle, MapPin, Stethoscope, MousePointerClick } from 'lucide-react';
+// グラフ描画用（追加）
 import {
   LineChart,
   Line,
@@ -8,7 +9,8 @@ import {
   CartesianGrid,
   Tooltip,
   Legend,
-  ResponsiveContainer
+  ResponsiveContainer,
+  ReferenceLine,
 } from 'recharts';
 import 'katex/dist/katex.min.css';
 import { BlockMath, InlineMath } from 'react-katex';
