@@ -70,6 +70,17 @@ const makeTransportData = (Vmax = 1, Km = 1, kPassive = 0.4) => {
   return data;
 };
 
+// 受動拡散：濃度-距離プロファイル用データ（模式図）
+const passiveProfileData = [
+  { x: 0,   c: 1.2 }, // バルク側 (C1)
+  { x: 25,  c: 1.0 }, // 膜表面 (Cm1)
+  { x: 75,  c: 0.4 }, // 膜裏面 (Cm2)
+  { x: 100, c: 0.2 }, // 反対側バルク (C2)
+];
+
+// 能動輸送/受動拡散：速度-濃度曲線用データ（模式図）
+const transportCurvesData = makeTransportData(1, 1, 0.25);
+
 // 受動拡散 vs 能動輸送 グラフコンポーネント
 const PassiveVsActiveChart = () => {
   const data = makeTransportData(1, 1, 0.4);
@@ -620,6 +631,186 @@ const App = () => {
               <li>受動拡散：フィックの拡散式に従い、<span className="font-bold text-blue-700">分子形薬物の濃度勾配</span>が駆動力</li>
               <li>能動輸送：方向付けは ATP やイオン勾配によって決まり、<span className="font-bold text-purple-700">基質濃度 [S]</span>は速度・飽和を決める要因</li>
             </ul>
+          </div>
+        </Slide>
+      )
+    },
+    {
+      title: "受動拡散 vs 能動輸送：数式とグラフで見る違い",
+      content: (
+        <Slide className="bg-gray-50">
+          <div className="flex flex-col h-full px-4 md:px-8 py-4 md:py-6">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-sky-700 mb-4 md:mb-6">
+              受動拡散 vs 能動輸送：数式とグラフで見る違い
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
+              {/* 左側：受動拡散（濃度-距離プロファイル＋膜） */}
+              <div className="bg-white rounded-2xl shadow-sm border border-sky-100 p-4 md:p-6 flex flex-col">
+                <h3 className="text-base md:text-lg font-bold text-sky-700 mb-2">
+                  受動拡散：濃度勾配と膜透過
+                </h3>
+                <p className="text-xs md:text-sm text-gray-700 mb-2">
+                  分子形薬物は、濃度が高い側（消化管液など）から低い側（血液側）へ、
+                  生体膜をはさんで拡散します。
+                </p>
+
+                {/* 濃度-距離プロファイルの模式図 */}
+                <div className="mt-2 flex-1">
+                  <div className="text-[10px] md:text-xs text-gray-500 mb-1 flex justify-between">
+                    <span>濃度</span>
+                    <span>距離（管腔 → 膜 → 血液）</span>
+                  </div>
+                  <div className="h-48 md:h-56 bg-sky-50 rounded-xl border border-sky-100 px-2 py-2">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart
+                        data={passiveProfileData}
+                        margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+                      >
+                        {/* グリッドは薄く / 目盛りラベルは表示しない */}
+                        <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                        <XAxis
+                          dataKey="x"
+                          type="number"
+                          domain={[0, 100]}
+                          tick={false}
+                          axisLine={false}
+                        />
+                        <YAxis
+                          dataKey="c"
+                          type="number"
+                          domain={[0, 1.4]}
+                          tick={false}
+                          axisLine={false}
+                        />
+
+                        {/* 膜の両側の境界（x=25, x=75） */}
+                        <ReferenceLine x={25} stroke="#9ca3af" strokeWidth={2} />
+                        <ReferenceLine x={75} stroke="#9ca3af" strokeWidth={2} />
+
+                        {/* 濃度プロファイルの線 */}
+                        <Line
+                          type="linear"
+                          dataKey="c"
+                          stroke="#0f766e"
+                          strokeWidth={3}
+                          dot={false}
+                          isAnimationActive={false}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  {/* ラベル（C1, Cm1, Cm2, C2 など）を下に簡単に */}
+                  <div className="mt-2 text-[10px] md:text-xs text-gray-600 flex justify-between">
+                    <span>C₁（消化管液など）</span>
+                    <span>膜中：C<sub>m1</sub> → C<sub>m2</sub></span>
+                    <span>C₂（血液側）</span>
+                  </div>
+                </div>
+
+                {/* 右側に簡単な膜透過の概念図 */}
+                <div className="mt-3 flex justify-center">
+                  <div className="inline-flex items-center text-[10px] md:text-xs text-gray-700 bg-sky-50 rounded-lg px-3 py-2 border border-sky-200">
+                    <span className="mr-2">消化管腔</span>
+                    <span className="w-10 h-6 border border-gray-400 bg-white mx-1 flex items-center justify-center text-[9px] md:text-[10px]">
+                      膜
+                    </span>
+                    <span className="mr-1">血液</span>
+                    <span className="ml-1 text-sky-600 font-bold">→</span>
+                  </div>
+                </div>
+
+                <div className="mt-2 text-[10px] md:text-xs text-gray-700 bg-yellow-50 border border-yellow-200 rounded-lg p-2">
+                  受動拡散では、
+                  <span className="font-bold text-sky-700">分子形薬物の濃度勾配</span>
+                  が駆動力になります。
+                </div>
+              </div>
+
+              {/* 右側：能動輸送（ミカエリス・メンテン + 速度-濃度曲線） */}
+              <div className="bg-white rounded-2xl shadow-sm border border-fuchsia-100 p-4 md:p-6 flex flex-col">
+                <h3 className="text-base md:text-lg font-bold text-fuchsia-700 mb-2">
+                  能動輸送：飽和する速度-濃度曲線
+                </h3>
+                <p className="text-xs md:text-sm text-gray-700 mb-2">
+                  トランスポーターを介する輸送は、
+                  基質濃度が低いときはほぼ直線的ですが、
+                  濃度が高くなると「上限速度」に近づき、飽和する挙動を示します。
+                </p>
+
+                {/* 速度-濃度曲線の模式図 */}
+                <div className="mt-2 flex-1">
+                  <div className="text-[10px] md:text-xs text-gray-500 mb-1 flex justify-between">
+                    <span>膜透過速度（dQ/dt）</span>
+                    <span>基質濃度 [S]</span>
+                  </div>
+                  <div className="h-48 md:h-56 bg-fuchsia-50 rounded-xl border border-fuchsia-100 px-2 py-2">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <LineChart
+                        data={transportCurvesData}
+                        margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis
+                          dataKey="C"
+                          type="number"
+                          domain={[0, 4]}
+                          tick={false}
+                          axisLine={false}
+                        />
+                        <YAxis
+                          type="number"
+                          domain={[0, 1.2]}
+                          tick={false}
+                          axisLine={false}
+                        />
+
+                        {/* 能動輸送（飽和する曲線） */}
+                        <Line
+                          type="monotone"
+                          dataKey="active"
+                          stroke="#ec4899"
+                          strokeWidth={3}
+                          dot={false}
+                          isAnimationActive={false}
+                        />
+
+                        {/* 受動拡散（直線） */}
+                        <Line
+                          type="linear"
+                          dataKey="passive"
+                          stroke="#0ea5e9"
+                          strokeWidth={3}
+                          dot={false}
+                          isAnimationActive={false}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+
+                  {/* 簡易凡例 */}
+                  <div className="mt-2 flex items-center justify-center gap-4 text-[10px] md:text-xs text-gray-700">
+                    <div className="flex items-center gap-1">
+                      <span className="w-3 h-1 rounded-full bg-sky-400 inline-block" />
+                      <span>受動拡散（線形）</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="w-3 h-1 rounded-full bg-pink-500 inline-block" />
+                      <span>能動輸送（飽和）</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-2 text-[10px] md:text-xs text-gray-700 bg-yellow-50 border border-yellow-200 rounded-lg p-2">
+                  能動輸送では、ATP やイオン勾配などの
+                  <span className="font-bold text-pink-600">エネルギー供給</span>
+                  により濃度差に逆らっても輸送が可能になりますが、
+                  <span className="font-bold">速度や飽和</span>の観点からは
+                  <InlineMath math="[S]" />（基質薬物濃度）が重要です。
+                </div>
+              </div>
+            </div>
           </div>
         </Slide>
       )
