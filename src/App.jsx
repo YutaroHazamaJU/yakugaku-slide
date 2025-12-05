@@ -487,6 +487,82 @@ const MainSlidesApp = () => {
       )
     },
     {
+      title: "受動拡散と能動輸送：式で整理",
+      content: (
+        <Slide>
+          <SectionTitle>受動拡散 vs 能動輸送：数式で見る違い</SectionTitle>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-10 items-start">
+            {/* 左：受動拡散（フィックの拡散式） */}
+            <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-blue-200">
+              <h3 className="font-bold text-xl md:text-2xl text-blue-700 mb-3 flex items-center">
+                <Activity className="w-6 h-6 md:w-7 md:h-7 mr-2 text-blue-500" />
+                受動拡散：フィックの拡散式
+              </h3>
+              <p className="text-base md:text-lg text-gray-700 mb-3">
+                生体膜を「単純な膜」とみなしたときの拡散フラックス J は、フィックの拡散式で表されます。
+              </p>
+              <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 md:p-4 mb-3 text-center">
+              <div className="font-mono text-lg md:text-2xl text-blue-800 leading-relaxed">
+                  J = -D · (dC/dx) ≈ P · (C_out - C_in)
+                </div>
+              </div>
+              <ul className="list-disc list-inside text-sm md:text-base text-gray-700 space-y-1">
+                <li>D：拡散係数</li>
+                <li>P：透過係数（D や膜厚をまとめた値）</li>
+                <li>C：膜の両側の薬物濃度</li>
+              </ul>
+              <div className="mt-3 bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded text-sm md:text-base text-gray-700">
+                生体膜透過を考えるとき、
+                <span className="font-bold text-blue-700 mx-1">"C" は分子形薬物濃度</span>
+                とみなします。したがって、
+                <span className="font-bold text-red-600">分子形の濃度勾配</span>
+                が受動拡散の駆動力になります。
+              </div>
+            </div>
+
+            {/* 右：担体介在輸送・能動輸送（ミカエリス–メンテン式） */}
+            <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-purple-200">
+              <h3 className="font-bold text-xl md:text-2xl text-purple-700 mb-3 flex items-center">
+                <Brain className="w-6 h-6 md:w-7 md:h-7 mr-2 text-purple-500" />
+                能動輸送：ミカエリス–メンテン型
+              </h3>
+              <p className="text-base md:text-lg text-gray-700 mb-3">
+                トランスポーターを介する輸送速度 v は、しばしばミカエリス–メンテン型の式で近似されます。
+              </p>
+              <div className="bg-purple-50 border border-purple-200 rounded-xl p-3 md:p-4 mb-3 text-center">
+                <div className="font-mono text-lg md:text-2xl text-purple-800 leading-relaxed">
+                  v = (V_max · [S]) / (K_m + [S])
+                </div>
+              </div>
+              <ul className="list-disc list-inside text-sm md:text-base text-gray-700 space-y-1">
+                <li>[S]：基質（薬物）の濃度</li>
+                <li>V<sub>max</sub>：最大輸送速度（輸送担体の数で決まる）</li>
+                <li>K<sub>m</sub>：基質親和性を表す定数</li>
+              </ul>
+              <div className="mt-3 bg-yellow-50 border-l-4 border-yellow-400 p-3 rounded text-sm md:text-base text-gray-700">
+                能動輸送では、ATP や Na<sup>+</sup> 勾配などの
+                <span className="font-bold text-indigo-700 mx-1">エネルギー供給</span>
+                により、
+                <span className="font-bold">薬物の濃度勾配に逆らって</span>
+                でも輸送が可能です。
+                一方で、
+                <span className="font-bold text-purple-700 mx-1">速度や飽和</span>
+                の観点からは、[S]（基質薬物濃度）が重要になります。
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-6 bg-gray-100 border-l-4 border-gray-500 p-4 rounded-xl text-sm md:text-base text-gray-800">
+            <p className="font-bold mb-1">まとめ：</p>
+            <ul className="list-disc list-inside space-y-1">
+              <li>受動拡散：フィックの拡散式に従い、<span className="font-bold text-blue-700">分子形薬物の濃度勾配</span>が駆動力</li>
+              <li>能動輸送：方向付けは ATP やイオン勾配によって決まり、<span className="font-bold text-purple-700">基質濃度 [S]</span>は速度・飽和を決める要因</li>
+            </ul>
+          </div>
+        </Slide>
+      )
+    },
+    {
       title: "製剤学への応用：処方設計",
       content: (
         <Slide>
