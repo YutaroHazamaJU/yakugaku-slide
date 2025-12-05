@@ -1,19 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft, BookOpen, Pill, Activity, TestTube, ArrowRight, Brain, AlertTriangle, MapPin, Stethoscope, MousePointerClick } from 'lucide-react';
-// src/App.jsx（例）
-import PasswordGate from './components/PasswordGate';
-// 既存の import はそのまま残す
+import 'katex/dist/katex.min.css';
+import { BlockMath, InlineMath } from 'react-katex';
 
-function App() {
-  return (
-    <PasswordGate
-      correctPassword="1208"      // ★ 好きなパスワードに書き換え可
-      storageKey="yakugaku-slide-unlocked"  // yakugaku-slide 用のキー
-    >
-      <MainSlidesApp />
-    </PasswordGate>
-  );
-}
 // --- 計算ロジック ---
 const calculateIonization = (ph, pka, type) => {
   const diff = ph - pka;
@@ -227,7 +216,7 @@ const PhSimulator = () => {
 };
 
 // --- メインアプリ ---
-const MainSlidesApp = () => {
+const App = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
@@ -284,7 +273,7 @@ const MainSlidesApp = () => {
                 <BulletPoint>
                   Henderson–Hasselbalch式：
                   <span className="font-mono bg-gray-100 px-2 py-0.5 rounded ml-1">
-                    pH = pKa + log([A⁻]/[HA])
+                    <InlineMath math={String.raw`\mathrm{pH} = \mathrm{p}K_a + \log\left(\frac{[\mathrm{A}^-]}{[\mathrm{HA}]}\right)`} />
                   </span>
                 </BulletPoint>
                 <BulletPoint>
@@ -502,9 +491,7 @@ const MainSlidesApp = () => {
                 生体膜を「単純な膜」とみなしたときの拡散フラックス J は、フィックの拡散式で表されます。
               </p>
               <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 md:p-4 mb-3 text-center">
-              <div className="font-mono text-lg md:text-2xl text-blue-800 leading-relaxed">
-                  J = -D · (dC/dx) ≈ P · (C_out - C_in)
-                </div>
+                <BlockMath math={String.raw`J = -D \\frac{dC}{dx} \\approx P\,(C_{\\text{out}} - C_{\\text{in}})`} />
               </div>
               <ul className="list-disc list-inside text-sm md:text-base text-gray-700 space-y-1">
                 <li>D：拡散係数</li>
@@ -530,9 +517,7 @@ const MainSlidesApp = () => {
                 トランスポーターを介する輸送速度 v は、しばしばミカエリス–メンテン型の式で近似されます。
               </p>
               <div className="bg-purple-50 border border-purple-200 rounded-xl p-3 md:p-4 mb-3 text-center">
-                <div className="font-mono text-lg md:text-2xl text-purple-800 leading-relaxed">
-                  v = (V_max · [S]) / (K_m + [S])
-                </div>
+                <BlockMath math={String.raw`v = \\frac{V_{\\max}[S]}{K_m + [S]}` } />
               </div>
               <ul className="list-disc list-inside text-sm md:text-base text-gray-700 space-y-1">
                 <li>[S]：基質（薬物）の濃度</li>
