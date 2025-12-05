@@ -460,6 +460,28 @@ const MainSlidesApp = () => {
               </div>
 
             </div>
+
+            <div className="mt-4 md:mt-6 bg-yellow-50 p-4 md:p-5 rounded-xl border-l-4 border-yellow-400 text-sm md:text-base text-gray-800">
+              <h4 className="font-bold text-base md:text-lg text-yellow-800 mb-2 flex items-center">
+                <Stethoscope className="w-4 h-4 md:w-5 md:h-5 mr-2 text-yellow-700" />
+                イオン形でも吸収されるケース：トランスポーター
+              </h4>
+              <p className="leading-relaxed">
+                「イオン形薬物は膜を通れないから吸収されない」というわけではありません。
+                受動拡散では<strong className="text-orange-700">分子形</strong>が有利ですが、
+                <strong className="text-blue-700 mx-1">PEPT1, OATP, OCT などのトランスポーター</strong>は
+                イオン形を含む特定の構造を<strong>担体介在輸送</strong>で細胞内へ運び込みます。
+              </p>
+              <ul className="mt-2 list-disc list-inside space-y-1">
+                <li>受動拡散：分子形が主役（pH・pKa・HH式で割合を予測）</li>
+                <li>トランスポーター：イオン形でも「基質」なら吸収されうる</li>
+              </ul>
+              <p className="mt-2 text-xs md:text-sm text-gray-600">
+                国試では「イオン形＝全く吸収されない」ではなく，
+                <span className="font-bold">「受動拡散では不利だが，トランスポーターにより吸収されうる」</span>
+                という整理が重要です。
+              </p>
+            </div>
           </div>
         </Slide>
       )
