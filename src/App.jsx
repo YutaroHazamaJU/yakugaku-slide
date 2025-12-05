@@ -81,56 +81,6 @@ const passiveProfileData = [
 // 能動輸送/受動拡散：速度-濃度曲線用データ（模式図）
 const transportCurvesData = makeTransportData(1, 1, 0.25);
 
-// 受動拡散 vs 能動輸送 グラフコンポーネント
-const PassiveVsActiveChart = () => {
-  const data = makeTransportData(1, 1, 0.4);
-
-  return (
-    <div className="w-full h-64 md:h-80 mt-6">
-      <ResponsiveContainer>
-        <LineChart
-          data={data}
-          margin={{ top: 10, right: 20, left: 0, bottom: 10 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis
-            dataKey="C"
-            label={{
-              value: '薬物濃度 C',
-              position: 'insideBottomRight',
-              offset: -5
-            }}
-          />
-          <YAxis
-            label={{
-              value: '膜透過速度 dQ/dt',
-              angle: -90,
-              position: 'insideLeft'
-            }}
-          />
-          <Tooltip />
-          <Legend />
-          <Line
-            type="monotone"
-            dataKey="passive"
-            name="受動拡散"
-            stroke="#2563eb"
-            strokeWidth={3}
-            dot={false}
-          />
-          <Line
-            type="monotone"
-            dataKey="active"
-            name="能動輸送"
-            stroke="#9333ea"
-            strokeWidth={3}
-            dot={false}
-          />
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
-  );
-};
 
 // インタラクティブ実験：pH & pKa シミュレーター
 const PhSimulator = () => {
@@ -623,28 +573,9 @@ const App = () => {
             </div>
           </div>
 
-          <PassiveVsActiveChart />
-
-          <div className="mt-6 bg-gray-100 border-l-4 border-gray-500 p-4 rounded-xl text-sm md:text-base text-gray-800">
-            <p className="font-bold mb-1">まとめ：</p>
-            <ul className="list-disc list-inside space-y-1">
-              <li>受動拡散：フィックの拡散式に従い、<span className="font-bold text-blue-700">分子形薬物の濃度勾配</span>が駆動力</li>
-              <li>能動輸送：方向付けは ATP やイオン勾配によって決まり、<span className="font-bold text-purple-700">基質濃度 [S]</span>は速度・飽和を決める要因</li>
-            </ul>
-          </div>
-        </Slide>
-      )
-    },
-    {
-      title: "受動拡散 vs 能動輸送：数式とグラフで見る違い",
-      content: (
-        <Slide className="bg-gray-50">
-          <div className="flex flex-col h-full px-4 md:px-8 py-4 md:py-6">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-sky-700 mb-4 md:mb-6">
-              受動拡散 vs 能動輸送：数式とグラフで見る違い
-            </h2>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
+          {/* グラフ模式図（受動拡散の濃度プロファイル + 能動輸送の速度-濃度曲線） */}
+          <div className="mt-8 bg-gray-50 rounded-2xl border border-gray-200 px-4 md:px-6 py-4 md:py-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* 左側：受動拡散（濃度-距離プロファイル＋膜） */}
               <div className="bg-white rounded-2xl shadow-sm border border-sky-100 p-4 md:p-6 flex flex-col">
                 <h3 className="text-base md:text-lg font-bold text-sky-700 mb-2">
@@ -661,7 +592,7 @@ const App = () => {
                     <span>濃度</span>
                     <span>距離（管腔 → 膜 → 血液）</span>
                   </div>
-                  <div className="h-48 md:h-56 bg-sky-50 rounded-xl border border-sky-100 px-2 py-2">
+                  <div className="h-40 md:h-48 bg-sky-50 rounded-xl border border-sky-100 px-2 py-2">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart
                         data={passiveProfileData}
@@ -709,7 +640,7 @@ const App = () => {
                   </div>
                 </div>
 
-                {/* 右側に簡単な膜透過の概念図 */}
+                {/* 簡単な膜透過の概念図 */}
                 <div className="mt-3 flex justify-center">
                   <div className="inline-flex items-center text-[10px] md:text-xs text-gray-700 bg-sky-50 rounded-lg px-3 py-2 border border-sky-200">
                     <span className="mr-2">消化管腔</span>
@@ -745,7 +676,7 @@ const App = () => {
                     <span>膜透過速度（dQ/dt）</span>
                     <span>基質濃度 [S]</span>
                   </div>
-                  <div className="h-48 md:h-56 bg-fuchsia-50 rounded-xl border border-fuchsia-100 px-2 py-2">
+                  <div className="h-40 md:h-48 bg-fuchsia-50 rounded-xl border border-fuchsia-100 px-2 py-2">
                     <ResponsiveContainer width="100%" height="100%">
                       <LineChart
                         data={transportCurvesData}
@@ -811,6 +742,14 @@ const App = () => {
                 </div>
               </div>
             </div>
+          </div>
+
+          <div className="mt-6 bg-gray-100 border-l-4 border-gray-500 p-4 rounded-xl text-sm md:text-base text-gray-800">
+            <p className="font-bold mb-1">まとめ：</p>
+            <ul className="list-disc list-inside space-y-1">
+              <li>受動拡散：フィックの拡散式に従い、<span className="font-bold text-blue-700">分子形薬物の濃度勾配</span>が駆動力</li>
+              <li>能動輸送：方向付けは ATP やイオン勾配によって決まり、<span className="font-bold text-purple-700">基質濃度 [S]</span>は速度・飽和を決める要因</li>
+            </ul>
           </div>
         </Slide>
       )
