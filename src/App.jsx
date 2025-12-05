@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft, BookOpen, Pill, Activity, TestTube, ArrowRight, Brain, AlertTriangle, MapPin, Stethoscope, MousePointerClick } from 'lucide-react';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer
+} from 'recharts';
 import 'katex/dist/katex.min.css';
 import { BlockMath, InlineMath } from 'react-katex';
 
@@ -39,12 +49,75 @@ const SectionTitle = ({ children }) => (
   </h2>
 );
 
+
 const BulletPoint = ({ children, icon: Icon = ChevronRight }) => (
   <li className="flex items-start mb-4 md:mb-6 text-gray-800 text-base md:text-xl lg:text-2xl">
     <Icon className="w-6 h-6 md:w-8 md:h-8 lg:w-10 lg:h-10 mr-3 md:mr-4 text-blue-500 flex-shrink-0 mt-1" />
     <span>{children}</span>
   </li>
 );
+
+// 受動拡散 vs 能動輸送 グラフ用データ生成関数
+const makeTransportData = (Vmax = 1, Km = 1, kPassive = 0.4) => {
+  const data = [];
+  for (let C = 0; C <= 5; C += 0.2) {
+    const passive = kPassive * C;
+    const active = (Vmax * C) / (Km + C);
+    data.push({ C, passive, active });
+  }
+  return data;
+};
+
+// 受動拡散 vs 能動輸送 グラフコンポーネント
+const PassiveVsActiveChart = () => {
+  const data = makeTransportData(1, 1, 0.4);
+
+  return (
+    <div className="w-full h-64 md:h-80 mt-6">
+      <ResponsiveContainer>
+        <LineChart
+          data={data}
+          margin={{ top: 10, right: 20, left: 0, bottom: 10 }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis
+            dataKey="C"
+            label={{
+              value: '薬物濃度 C',
+              position: 'insideBottomRight',
+              offset: -5
+            }}
+          />
+          <YAxis
+            label={{
+              value: '膜透過速度 dQ/dt',
+              angle: -90,
+              position: 'insideLeft'
+            }}
+          />
+          <Tooltip />
+          <Legend />
+          <Line
+            type="monotone"
+            dataKey="passive"
+            name="受動拡散"
+            stroke="#2563eb"
+            strokeWidth={3}
+            dot={false}
+          />
+          <Line
+            type="monotone"
+            dataKey="active"
+            name="能動輸送"
+            stroke="#9333ea"
+            strokeWidth={3}
+            dot={false}
+          />
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  );
+};
 
 // インタラクティブ実験：pH & pKa シミュレーター
 const PhSimulator = () => {
@@ -536,6 +609,8 @@ const App = () => {
               </div>
             </div>
           </div>
+
+          <PassiveVsActiveChart />
 
           <div className="mt-6 bg-gray-100 border-l-4 border-gray-500 p-4 rounded-xl text-sm md:text-base text-gray-800">
             <p className="font-bold mb-1">まとめ：</p>
