@@ -491,7 +491,7 @@ const App = () => {
                 生体膜を「単純な膜」とみなしたときの拡散フラックス J は、フィックの拡散式で表されます。
               </p>
               <div className="bg-blue-50 border border-blue-200 rounded-xl p-3 md:p-4 mb-3 text-center">
-                <BlockMath math={String.raw`J = -D \\frac{dC}{dx} \\approx P\,(C_{\\text{out}} - C_{\\text{in}})`} />
+                <BlockMath math={String.raw`J = -D \frac{dC}{dx} \approx P\,(C_{\text{out}} - C_{\text{in}})`} />
               </div>
               <ul className="list-disc list-inside text-sm md:text-base text-gray-700 space-y-1">
                 <li>D：拡散係数</li>
@@ -517,7 +517,7 @@ const App = () => {
                 トランスポーターを介する輸送速度 v は、しばしばミカエリス–メンテン型の式で近似されます。
               </p>
               <div className="bg-purple-50 border border-purple-200 rounded-xl p-3 md:p-4 mb-3 text-center">
-                <BlockMath math={String.raw`v = \\frac{V_{\\max}[S]}{K_m + [S]}` } />
+                <BlockMath math={String.raw`v = \frac{V_{\max}[S]}{K_m + [S]}` } />
               </div>
               <ul className="list-disc list-inside text-sm md:text-base text-gray-700 space-y-1">
                 <li>[S]：基質（薬物）の濃度</li>
