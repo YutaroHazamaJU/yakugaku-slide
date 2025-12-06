@@ -71,10 +71,15 @@ const makeTransportData = (Vmax = 1, Km = 1, kPassive = 0.4) => {
 };
 
 // 受動拡散：濃度-距離プロファイル用データ（模式図）
+// C1, C2 はバルク溶液中の濃度，K·C1, K·C2 は膜中への分配後の濃度をイメージ
 const passiveProfileData = [
-  { x: 0,   c: 1.2 }, // バルク側 (C1)
-  { x: 25,  c: 1.0 }, // 膜表面 (Cm1)
-  { x: 75,  c: 0.4 }, // 膜裏面 (Cm2)
+  { x: 0,   c: 0.6 }, // バルク側 (C1)
+  { x: 25,  c: 0.6 }, // 膜直前まで C1 一定
+  { x: 25,  c: 1.0 }, // 膜直前まで C1 一定
+  { x: 25,  c: 1.0 }, // 膜表面で分配により K·C1 へジャンプ
+  { x: 75,  c: 0.4 }, // 膜表面で分配により K·C1 へジャンプ
+  { x: 75,  c: 0.4 }, // 膜内で線形に低下し K·C2 へ
+  { x: 75,  c: 0.2 }, // 膜を出た瞬間に C2 まで低下
   { x: 100, c: 0.2 }, // 反対側バルク (C2)
 ];
 
@@ -303,7 +308,7 @@ const App = () => {
             {/* 左：物理化学でやったことの振り返り */}
             <div>
               <p className="text-lg md:text-2xl text-gray-600 mb-6 leading-relaxed">
-                直前の物理化学では，次のような内容を学びました：
+                物理化学では，次のような内容を学びました：
               </p>
               <ul className="space-y-4 md:space-y-6">
                 <BulletPoint>
@@ -313,7 +318,7 @@ const App = () => {
                   </span>
                 </BulletPoint>
                 <BulletPoint>
-                  緩衝液・pKa・pI など
+                  緩衝液・pKa・等電点 など
                   「<span className="font-bold text-blue-600">どの形がどれくらい存在するか</span>」
                   を決める考え方
                 </BulletPoint>
@@ -759,9 +764,15 @@ const App = () => {
       content: (
         <Slide>
           <SectionTitle>難溶性薬物の可溶化手法</SectionTitle>
-          <p className="mb-6 md:mb-8 text-lg md:text-xl text-gray-600">
-            創薬段階で見つかる候補化合物の約7割は「難溶性」です。
+          <p className="mb-2 md:mb-3 text-lg md:text-xl text-gray-600">
+            創薬段階で見つかる候補化合物の
+            <span className="font-bold">多く（約7〜9割）が難溶性</span>
+            であると報告されています<sup>1,2</sup>。
             酸塩基平衡の知識を使って、物理化学的に溶解度を向上させるアプローチが求められます。
+          </p>
+          <p className="mb-4 md:mb-6 text-xs md:text-sm text-gray-400">
+            1) Williams HD et al., Pharmacol Rev, 2013.　
+            2) Savjani KT et al., ISRN Pharm, 2012.
           </p>
           
           <div className="space-y-4 md:space-y-6">
