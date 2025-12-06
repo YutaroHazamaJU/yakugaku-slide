@@ -370,8 +370,12 @@ const App = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center h-full">
             <div>
               <p className="text-lg md:text-2xl text-gray-600 mb-6 md:mb-8 leading-relaxed">
-                多くの医薬品は「弱酸」または「弱塩基」の有機化合物です。
-                これらは環境のpHによって、その<span className="font-bold text-blue-600">存在形</span>（イオン形か分子形か）を劇的に変えます。
+                臨床で使用されている医薬品の多くは、
+                <span className="font-bold">弱酸性または弱塩基性の官能基</span>
+                をもつ有機化合物です。
+                これらは環境のpHによって、その
+                <span className="font-bold text-blue-600">存在形</span>
+                （イオン形か分子形か）を劇的に変えます。
               </p>
               <ul className="space-y-4 md:space-y-6">
                 <BulletPoint icon={AlertTriangle}>
@@ -387,6 +391,12 @@ const App = () => {
                 <span className="font-bold">重要:</span> 薬が効くためには「溶けて」かつ「吸収される」必要があります。
                 この相反する性質のバランスを支配するのが <span className="font-bold text-xl md:text-2xl">pH</span> と <span className="font-bold text-xl md:text-2xl">pKa</span> です。
               </div>
+              <p className="mt-3 text-xs md:text-sm text-gray-500">
+                ※「臨床で使用される医薬品の多くは弱酸性または弱塩基性の官能基をもつ化合物である」ことは、
+                薬物の pKa 分布を解析した Manallack DT,
+                <span className="italic"> The pKa Distribution of Drugs: Application to Drug Discovery</span>,
+                <span className="italic"> Perspectives in Medicinal Chemistry</span>, 2007;1:25–38 に詳しくまとめられています。
+              </p>
             </div>
             <div className="flex justify-center items-center mt-6 lg:mt-0">
               <div className="relative w-64 h-64 md:w-80 md:h-80 bg-gradient-to-b from-blue-100 to-orange-100 rounded-full flex items-center justify-center border-4 border-dashed border-gray-300 shadow-inner">
