@@ -822,35 +822,6 @@ const App = () => {
         </Slide>
       )
     },
-    {
-      title: "まとめ",
-      content: (
-        <Slide>
-          <SectionTitle>Take Home Message</SectionTitle>
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-6 md:p-10 rounded-2xl shadow-xl mb-8 md:mb-12 transform hover:scale-[1.01] transition-transform">
-            <h3 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6">酸塩基平衡は「共通言語」</h3>
-            <p className="text-lg md:text-2xl opacity-90 leading-relaxed">
-              pKaとpHの関係を理解することは、単なる計算ではありません。
-              それは、薬物が体内でどう振る舞うかを予測し（生物薬剤学）、
-              最適な形にデザインする（製剤学）ための、薬剤師にとっての最強のツールです。
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 text-center">
-            <div className="p-6 md:p-8 bg-gray-50 rounded-2xl border border-gray-200">
-              <BookOpen className="w-10 h-10 md:w-12 md:h-12 mx-auto text-blue-400 mb-4" />
-              <div className="font-bold text-xl md:text-2xl text-gray-700">今日の復習項目</div>
-              <div className="text-lg md:text-xl text-gray-500 mt-2">Henderson-Hasselbalch式、pH分配仮説</div>
-            </div>
-            <div className="p-6 md:p-8 bg-gray-50 rounded-2xl border border-gray-200">
-              <Stethoscope className="w-10 h-10 md:w-12 md:h-12 mx-auto text-indigo-400 mb-4" />
-              <div className="font-bold text-xl md:text-2xl text-gray-700">臨床応用</div>
-              <div className="text-lg md:text-xl text-gray-500 mt-2">食事効果 (Food Effect) の予測</div>
-            </div>
-          </div>
-        </Slide>
-      )
-    }
   ];
 
   const nextSlide = () => {
